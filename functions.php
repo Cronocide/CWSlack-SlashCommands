@@ -1,7 +1,7 @@
 <?php
 /*
 	CWSlack-SlashCommands
-    Copyright (C) 2017  jundis
+    Copyright (C) 2016  jundis
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -53,8 +53,8 @@ function cURL($url, $header)
     }
     curl_close($ch); //Close the curl connection for cleanup.
 
-    $jsonDecode = json_decode($curlBodyTData, false); //Decode the JSON returned by the CW API.
-    #error_log(json_decode($curlBodyTData, true),0);
+    $jsonDecode = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+
     if(array_key_exists("code",$jsonDecode)) { //Check if array contains error code
         if($jsonDecode->code == "NotFound") { //If error code is NotFound
             die("Connectwise record was not found."); //Report that the ticket was not found.
