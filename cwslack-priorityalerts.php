@@ -25,15 +25,16 @@ require_once 'config.php'; //Require the config file.
 require_once 'functions.php';
 
 //Dates required for URL to function
-$datenow = gmdate("Y-m-d\TH:i", strtotime("-" . $prioritywait . " minutes")); //Date set to 10 minutes prior to now, to catch for tickets happening right now.
-$date2hours = gmdate("Y-m-d\TH:i", strtotime("-2 hours")); //Date set to 2 hours out so reminders up to 2 hours function.
+$datenow = gmdate("Y-m-d\TH:i", strtotime("-1 minutes")); //Date set to 1 minute prior to now, to catch for tickets happening right now.
+$delayeddate= gmdate("Y-m-d\TH:i", strtotime("+" . $priorityscantime . " minutes")); //Date set to 2 hours out so reminders up to 2 hours function.
 
 $url = $connectwise. "/$connectwisebranch/apis/3.0/schedule/entries?conditions=dateStart%20%3E%20[" . $date2hours . "]%20and%20dateStart%20%3C%20[". $datenow . "]&orderBy=dateStart%20desc"; //URL to access the schedule API
 $ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 
+$priorityTicketURL = $connectwise. "/$connectwisebranch/apis/3.0/service/tickets?conditions=board%2Fname%3D%22" . $priorityboard . "%22%20AND%20priority%2Fname%3D%22" . $priorityname . "%22%20AND%20dateEntered%20%20%3E%20%5B" . $datenow . "%5D%20AND%20dateEntered%20%3C%20%5B" $delayeddate . "%5D";
+
 //Set headers for cURL requests. $header_data covers API authentication while $header_data2 covers the Slack output.
 $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
-
 $header_data2 =array(
     "Content-Type: application/json"
 );
@@ -52,7 +53,7 @@ $dataTData = cURL($url, $header_data); //Decode the JSON returned by the CW API.
 
 $prioritystatuses = explode("|",$prioritystatus);
 $priorities = explode("|",$prioritylist);
-
+///////////////////////////////////////////////////  Handle the request below. This will all need to be changed. -DD  ////////////////////////////////////
 foreach($dataTData as $entry)
 {
     $user = $entry->member->identifier;
