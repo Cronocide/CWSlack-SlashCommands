@@ -108,7 +108,8 @@ function cURLPost($url, $header, $request, $postfieldspre)
 
     if($debugmode)
     {
-        var_dump($answerTCmd);
+	print("DEBUG: Dumping POST data:\n");
+        var_dump($answerTCmd); // Dump raw data. -DD
     }
 
     // If there was an error, show it
